@@ -669,7 +669,7 @@ ok_system** ok_integrate_gsl(ok_system* initial, const gsl_vector* times, ok_int
                             
                         }
                         
-                        for (int j = 0; j < SAMPLES; j++)
+                        /*for (int j = 0; j < SAMPLES; j++)
                             ok_free_system(bag[j]);
                         free(bag);
                         
@@ -679,7 +679,20 @@ ok_system** ok_integrate_gsl(ok_system* initial, const gsl_vector* times, ok_int
                         gsl_odeiv2_step_free(stepper);
 
                         
-                        return NULL;
+                        return NULL;*/
+                        
+                        for (int j = 0; j < SAMPLES; j++) {
+                            bag[j]->time = bag[j]->epoch = bag[i]->time;
+                            gsl_matrix_set_all(bag[j]->xyz, INVALID_NUMBER);
+                            gsl_matrix_set_all(bag[j]->orbits, INVALID_NUMBER);
+                        }
+                        
+                        gsl_odeiv2_control_free(control);
+                        gsl_odeiv2_evolve_free(e);
+                        gsl_odeiv2_step_free(stepper);
+                        
+                        
+                        return bag;
                     } else {
                         if (error != NULL) {
                             *error = ok_last_error(bag[i]);
